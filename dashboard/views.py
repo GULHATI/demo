@@ -19,8 +19,11 @@ def index(request):
 def gologin(request):
     return render(request, 'loginpage.html')
 
-def loginpage(request):
+def custsignuppage(request):
     return render(request, "signuppage.html")
+
+def partnersignuppage(request):
+    return render(request, "partnersignuppage.html")
 
 def gohome(request):
     return  redirect('index')
@@ -32,6 +35,7 @@ def signin(request):
     if request.method == 'POST':
         username = request.POST['usern']
         password = request.POST['password']
+        type = request.POST['type']
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
@@ -42,6 +46,17 @@ def signin(request):
 def signup(request):
     if request.method == 'POST':
         user = User()
+        email = request.POST['email']
+        password = request.POST['password']
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        company = request.POST['company']
+        phone = request.POST['phone']
+        type = request.POST['type']
+        address = request.POST['address']
+        pan = request.POST['pan']
+        tan = request.POST['tan']
+        gst = request.POST['gst']
         user.username = email
         user.set_password(password)
         user.email = email
