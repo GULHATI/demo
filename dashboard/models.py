@@ -13,8 +13,8 @@ class Technologies(models.Model):
         return self.name
 
 class Customer(models.Model):
-    name = models.CharField(primary_key=True,max_length=500)
-    email = models.CharField(blank=True, null=True,max_length=500)
+    name = models.CharField(blank=True, null=True,max_length=500)
+    email = models.CharField(primary_key=True,max_length=500)
     phone = models.CharField(blank=True, null=True,max_length=500)
     pan =  models.CharField(blank=True, null=True,max_length=500)
     tan = models.CharField(blank=True, null=True,max_length=500)
@@ -26,8 +26,8 @@ class Customer(models.Model):
         return self.name
 
 class Supplier(models.Model):
-    name = models.CharField(primary_key=True, max_length=500)
-    email = models.CharField(blank=True, null=True, max_length=500)
+    name = models.CharField(blank=True, null=True, max_length=500)
+    email = models.CharField(primary_key=True, max_length=500)
     phone = models.CharField(blank=True, null=True, max_length=500)
     pan = models.CharField(blank=True, null=True, max_length=500)
     tan = models.CharField(blank=True, null=True, max_length=500)

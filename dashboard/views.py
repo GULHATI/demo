@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
 from django.http import HttpResponse
+from models import Customer,Supplier,Technologies
 
 
 
@@ -38,8 +39,18 @@ def signin(request):
         type = request.POST['type']
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            return redirect('home')
+            if type == 'customer':
+                c = Customer.objects.get(email = username)
+                login(request, user)
+                return HttpResponse("Customer")
+                #return redirect('home')
+            elif type == 'partner':
+                s = Supplier.objects.get(email =username)
+                login(request,user)
+                return HttpResponse("Supplier")
+                #return redirect('home')
+            else:
+                return HttpResponse("Invalid Credentials")
         else:
             return HttpResponse("INVALID LOGIN DETAILS")
 
@@ -50,7 +61,6 @@ def signup(request):
         password = request.POST['password']
         fname = request.POST['fname']
         lname = request.POST['lname']
-        company = request.POST['company']
         phone = request.POST['phone']
         type = request.POST['type']
         address = request.POST['address']
@@ -62,6 +72,28 @@ def signup(request):
         user.email = email
         user.is_active = False
         user.save()
+        if type == 'customer':
+            cust = Customer()
+            cust.name = fname + ' '+ lname
+            cust.email = email
+            cust.phone = phone
+            cust.pan = pan
+            cust.tan = tan
+            cust.gst = gst
+            cust.address = address
+            cust.type = 'customer'
+            cust.save()
+        else:
+            cust = Supplier()
+            cust.name = fname + ' ' + lname
+            cust.email = email
+            cust.phone = phone
+            cust.pan = pan
+            cust.tan = tan
+            cust.gst = gst
+            cust.address = address
+            cust.type = 'partner'
+            cust.save()
         print(user.password)
         current_site = get_current_site(request)
         mail_subject = 'Activate your account.'
@@ -83,13 +115,27 @@ def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-        username = user.username
     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-        login(request, user)
-        return redirect('home')
+        username = user.username
+        try:
+            c = Customer.objects.get(email=username)
+        except:
+            c = None
+        if c is not None:
+            login(request, user)
+            #return redirect('home')
+            return HttpResponse("Customer")
+        try:
+            s = Supplier.objects.get(email =username)
+        except :
+            s = None
+        if s is not None:
+            login(request, user)
+            #return redirect('home')
+            return HttpResponse("Supplier")
     else:
         return HttpResponse('Activation link is invalid!')
