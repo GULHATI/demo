@@ -25,6 +25,9 @@ def loginpage(request):
 def gohome(request):
     return  redirect('index')
 
+def partnerlogin(request):
+    return render(request, 'partnerloginpage.html')
+
 def signin(request):
     if request.method == 'POST':
         username = request.POST['usern']
