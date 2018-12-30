@@ -38,6 +38,15 @@ def signin(request):
 
 def signup(request):
     if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        fname = request.POST['fname']
+        lname = request.POST['lname']
+        company = request.POST['company']
+        phone = request.POST['phone']
+        country = request.POST['country']
+        state = request.POST['state']
+        city = request.POST['city']
         user = User()
         user.username = email
         user.set_password(password)
