@@ -62,7 +62,7 @@ def signup(request):
         user.email = email
         user.is_active = False
         user.save()
-        print user.password
+        print(user.password)
         current_site = get_current_site(request)
         mail_subject = 'Activate your account.'
         message = render_to_string('acc_active_email.html', {
