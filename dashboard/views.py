@@ -32,6 +32,15 @@ def gohome(request):
 def partnerlogin(request):
     return render(request, 'partnerloginpage.html')
 
+def customerdashboard(request):
+    return render(request,'customerdashboard.html')
+
+def supplierdashboard(request):
+    return render(request,'supplierdashboard.html')
+
+def add_technologies(request):
+    return render(request,'newtechnologies.html')
+
 def signin(request):
     if request.method == 'POST':
         username = request.POST['usern']
@@ -42,13 +51,13 @@ def signin(request):
             if type == 'customer':
                 c = Customer.objects.get(email = username)
                 login(request, user)
-                return HttpResponse("Customer")
-                #return redirect('home')
+                #return HttpResponse("Customer")
+                return redirect(customerdashboard)
             elif type == 'partner':
                 s = Supplier.objects.get(email =username)
                 login(request,user)
-                return HttpResponse("Supplier")
-                #return redirect('home')
+                #return HttpResponse("Supplier")
+                return redirect(supplierdashboard)
             else:
                 return HttpResponse("Invalid Credentials")
         else:
@@ -127,15 +136,15 @@ def activate(request, uidb64, token):
             c = None
         if c is not None:
             login(request, user)
-            #return redirect('home')
-            return HttpResponse("Customer")
+            return redirect(customerdashboard)
+            #return HttpResponse("Customer")
         try:
             s = Supplier.objects.get(email =username)
         except :
             s = None
         if s is not None:
             login(request, user)
-            #return redirect('home')
-            return HttpResponse("Supplier")
+            return redirect(supplierdashboard)
+            #return HttpResponse("Supplier")
     else:
         return HttpResponse('Activation link is invalid!')

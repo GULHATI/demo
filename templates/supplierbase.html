@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Alegreya Sans' rel='stylesheet'>
+<style>
+body {
+  margin: 0;
+  font-family: "Open Sans", "Martel Sans", Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+.topbar {
+    height: 60px;
+    border-bottom: 1px solid #DCDCDC;
+    position: relative;
+}
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #083551;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+.sidebar a {
+  display: block;
+  color: #808a92;
+  padding: 16px;
+  text-decoration: none;
+  font-family: 'Alegreya Sans';
+}
+
+.sidebar a.active {
+  background-color: #092d44;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #244154;
+  color: white;
+}
+
+div#content {
+  margin-left: 190px;
+  padding: 15px 16px;
+  height: 1000px;
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div#content {margin-left: 0; padding: 0}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
+{% block style %}
+{% endblock %}
+</style>
+</head>
+<body>
+<div class="topbar">
+</div>
+<div class="sidebar">
+    {% block sidebar %}
+    {% load staticfiles %}
+  <a class="active" href="{%  url 'supplierdashboard' %}">Dashboard</a>
+        <a href="{% url 'addtechnologies' %}"> Technologies </a>
+    {% endblock %}
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</div>
+<div id="content">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>
