@@ -41,6 +41,9 @@ def supplierdashboard(request):
 def add_technologies(request):
     return render(request,'newtechnologies.html')
 
+def rfq(request):
+    return render(request, 'request_quote.html')
+
 def signin(request):
     if request.method == 'POST':
         username = request.POST['usern']
@@ -148,3 +151,22 @@ def activate(request, uidb64, token):
             #return HttpResponse("Supplier")
     else:
         return HttpResponse('Activation link is invalid!')
+
+
+
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+
+
+def simple_upload(request):
+    if request.method == 'POST' and request.FILES['myfile']:
+        myfile1 = request.FILES['myfile1']
+        myfile2 = request.FILES['myfile2']
+        myfile3 = request.FILES['myfile3']
+        fs = FileSystemStorage()
+        filename = fs.save(myfile1.name, myfile1)
+        uploaded_file_url = fs.url(filename)
+        return render(request, 'core/simple_upload.html', {
+            'uploaded_file_url': uploaded_file_url
+        })
+    return HttpResponse("FIle uploaded successfully")

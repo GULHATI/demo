@@ -1,0 +1,46 @@
+{% extends "customerbase.html" %}
+
+{% block title %}HOME{% endblock %}
+
+{% block style %}
+<style>
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
+
+{% endblock %}
+{% load static %}
+{% block content %}
+<h1 align="center">Request For Quotes</h1>
+<hr>
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+    <div class="container" style="width:100%">
+        <div class="well well-md" style="width:100%">
+            <label for="inputdefault">Enter The name of the quotation</label>
+            <input class="form-control" id="inputdefault" name="quotes" type="text">
+        </div>
+
+        <div class="well well-lg" style="width:100%">
+                <h4>Upload Pdfs, Presentation related to quotes</h4>
+                <input type="file" name="myfile1" required multiple>
+        </div>
+
+        <div class="well well-lg">
+            <h4>Upload Supporting documents 1 (Not Mandatory)</h4>
+            <input type="file" name="myfile2">
+        </div>
+
+        <div class="well well-lg">
+            <h4>Upload Supporting documents 2 (Not Mandatory)</h4>
+            <input type="file" name="myfile3">
+        </div>
+    </div>
+
+    <button type="submit" style="width:98%; margin-left:11px" class="btn btn-success btn-lg">Send email to all Partner with the attached documents requesting quotes</button>
+</form>
+{% endblock %}
