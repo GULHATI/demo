@@ -19,4 +19,8 @@ urlpatterns = [
     url(r'^customerdashboard/$',views.customerdashboard,name='customerdashboard'),
     url(r'^supplierdashboard/$',views.supplierdashboard,name = 'supplierdashboard'),
     url(r'^addtechnologies/$',views.add_technologies,name='addtechnologies'),
+    url(r'^rfq/', views.rfq, name='rfq'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
