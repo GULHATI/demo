@@ -9,40 +9,52 @@ from .tokens import account_activation_token
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+import os
 from django.http import HttpResponse
-from models import Customer,Supplier,Technologies
-
+from models import Customer, Supplier, Technologies, RFQ, TempFile
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 def index(request):
     return render(request, 'landingpage.html')
 
+
 def gologin(request):
     return render(request, 'loginpage.html')
+
 
 def custsignuppage(request):
     return render(request, "signuppage.html")
 
+
 def partnersignuppage(request):
     return render(request, "partnersignuppage.html")
 
+
 def gohome(request):
-    return  redirect('index')
+    return redirect('index')
+
 
 def partnerlogin(request):
     return render(request, 'partnerloginpage.html')
 
+
 def customerdashboard(request):
     return render(request,'customerdashboard.html')
+
 
 def supplierdashboard(request):
     return render(request,'supplierdashboard.html')
 
+
 def add_technologies(request):
     return render(request,'newtechnologies.html')
 
+
 def rfq(request):
-    return render(request, 'request_quote.html')
+    technologies = Technologies.objects.all()
+    return render(request, 'request_quote.html', {'tech': technologies})
+
 
 def signin(request):
     if request.method == 'POST':
@@ -153,20 +165,76 @@ def activate(request, uidb64, token):
         return HttpResponse('Activation link is invalid!')
 
 
-
-from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import default_storage
 
+def save_quotes(request):
+    if request.method == 'POST':
+        quote_name = request.POST['quotes']
+        technologies = request.POST.getlist('technologies')
+        myfile1 = request.FILES.getlist('myfile1')
 
-def simple_upload(request):
-    if request.method == 'POST' and request.FILES['myfile']:
-        myfile1 = request.FILES['myfile1']
-        myfile2 = request.FILES['myfile2']
-        myfile3 = request.FILES['myfile3']
-        fs = FileSystemStorage()
-        filename = fs.save(myfile1.name, myfile1)
-        uploaded_file_url = fs.url(filename)
-        return render(request, 'core/simple_upload.html', {
-            'uploaded_file_url': uploaded_file_url
-        })
-    return HttpResponse("FIle uploaded successfully")
+        rfq = RFQ()
+        rfq.quotename = quote_name
+        rfq.save()
+        rfq = RFQ.objects.get(quotename=quote_name)
+        for x in technologies:
+            y = Technologies.objects.get(name=x)
+            rfq.technologies.add(y)
+        rfq.save()
+        count = 0
+        files = []
+        rf = RFQ.objects.get(quotename=quote_name)
+        for f in myfile1:
+            temp = TempFile()
+            temp.name = str(quote_name) + "/" + str(count)
+            temp.file = f
+            temp.save()
+            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp', f.name), 'wb+') as dest:
+                for chunk in f.chunks():
+                    dest.write(chunk)
+            files.append('temp/'+f.name)
+            x = TempFile.objects.get(name=temp.name)
+            rf.file1.add(x)
+            count = count + 1
+        rf.save()
+        try:
+            rfq = RFQ.objects.get(quotename=quote_name)
+            myfile2 = request.FILES['myfile2']
+            myfile3 = request.FILES['myfile3']
+            if myfile2:
+                rfq.file2 = myfile2
+            if myfile3:
+                rfq.file3 = myfile3
+
+            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp' + myfile2.name), 'wb+') as dest:
+                for chunk in myfile2.chunks():
+                    dest.write(chunk)
+            files.append('temp/' + myfile2.name)
+
+            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp' + myfile3.name), 'wb+') as dest:
+                for chunk in myfile2.chunks():
+                    dest.write(chunk)
+            files.append('temp/' + myfile3.name)
+            rfq.save()
+        except Exception:
+            pass
+
+        # Send email to all suppliers
+        for x in technologies:
+            mail_subject = 'Requesting quotes'
+            message = "Please find the attached documents with information regarding the technology " \
+                      "requirement.\nShortly when the customer will open a window to start bidiing.\n" \
+                      '30mins will be provided to top 3 suppliers to' \
+                      'enter the bid.\n Thanks.\n\n.' \
+                      'The above quote is requested for the technology: {}'.format(x)
+            s = Supplier.objects.all()
+            print(files)
+            for y in s:
+                email = EmailMessage(
+                    mail_subject, message, to=[y.email]
+                )
+                for f in files:
+                    email.attach_file(os.path.join(BASE_DIR, 'media', f))
+                email.send()
+        return HttpResponse("FIle uploaded successfully")
