@@ -207,17 +207,18 @@ def save_quotes(request):
             if myfile3:
                 rfq.file3 = myfile3
 
-            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp' + myfile2.name), 'wb+') as dest:
+            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp', myfile2.name), 'wb+') as dest:
                 for chunk in myfile2.chunks():
                     dest.write(chunk)
             files.append('temp/' + myfile2.name)
 
-            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp' + myfile3.name), 'wb+') as dest:
+            with default_storage.open(os.path.join(BASE_DIR, 'media', 'temp', myfile3.name), 'wb+') as dest:
                 for chunk in myfile2.chunks():
                     dest.write(chunk)
             files.append('temp/' + myfile3.name)
             rfq.save()
         except Exception:
+            raise Exception
             pass
 
         # Send email to all suppliers
