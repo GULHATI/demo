@@ -15,16 +15,44 @@
 {% endblock %}
 {% load static %}
 {% block content %}
+
+
 <h1 align="center">Request For Quotes</h1>
 <hr>
-<form method="post" enctype="multipart/form-data">
+
+<script>
+$(document).ready(function() {
+  $('#multiselect').multiselect({
+    buttonWidth : '160px',
+    includeSelectAllOption : true,
+		nonSelectedText: 'Select an Option'
+  });
+});
+</script>
+
+<form method="post" class="form1" enctype="multipart/form-data" action="{% url 'saverfq' %}">
 {% csrf_token %}
     <div class="container" style="width:100%">
+
         <div class="well well-md" style="width:100%">
             <label for="inputdefault">Enter The name of the quotation</label>
-            <input class="form-control" id="inputdefault" name="quotes" type="text">
+            <input class="form-control" id="inputdefault" name="quotes" type="text" required>
         </div>
 
+        <div class="well well-lg container" style="width:100%">
+            <strong>Select Technology:</strong>&ensp; &ensp;
+            <select id="multiple-checkboxes" multiple="multiple" name="technologies" required>
+                {% for techno in tech %}
+                    <option value="{{ techno.name }}">{{ techno.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#multiple-checkboxes').multiselect();
+            });
+        </script>
         <div class="well well-lg" style="width:100%">
                 <h4>Upload Pdfs, Presentation related to quotes</h4>
                 <input type="file" name="myfile1" required multiple>
