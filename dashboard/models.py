@@ -33,12 +33,12 @@ class RFQ(models.Model):
 
 
 class Customer(models.Model):
-    name = models.CharField(blank=True, null=True,max_length=500)
-    email = models.CharField(primary_key=True,max_length=500)
-    phone = models.CharField(blank=True, null=True,max_length=500)
-    pan =  models.CharField(blank=True, null=True,max_length=500)
-    tan = models.CharField(blank=True, null=True,max_length=500)
-    gst = models.CharField(blank=True, null=True,max_length=500)
+    name = models.CharField(blank=True, null=True, max_length=500)
+    email = models.CharField(primary_key=True, max_length=500)
+    phone = models.CharField(blank=True, null=True, max_length=500)
+    pan = models.CharField(blank=True, null=True, max_length=500)
+    tan = models.CharField(blank=True, null=True, max_length=500)
+    gst = models.CharField(blank=True, null=True, max_length=500)
     address = models.CharField(blank=True, null=True, max_length=3000)
     type = models.CharField(blank=True, null=True, max_length=3000)
     quotes = models.ManyToManyField(RFQ)

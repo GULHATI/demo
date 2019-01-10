@@ -20,7 +20,9 @@ urlpatterns = [
     url(r'^supplierdashboard/$',views.supplierdashboard,name = 'supplierdashboard'),
     url(r'^addtechnologies/$',views.add_technologies,name='addtechnologies'),
     url(r'^rfq/', views.rfq, name='rfq'),
-    url(r'^saverfq/', views.save_quotes, name='saverfq')
+    url(r'^saverfq/', views.save_quotes, name='saverfq'),
+    url(r'^view_quotes/', views.view_quotes, name='viewquote'),
+    url(r'^inital_bid/', views.supplier_initial_bid, name='place_initial_bid')
 ]
 
 if settings.DEBUG:

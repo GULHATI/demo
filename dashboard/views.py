@@ -168,7 +168,9 @@ def activate(request, uidb64, token):
 from django.core.files.storage import FileSystemStorage
 from django.core.files.storage import default_storage
 
+
 def save_quotes(request):
+    user = request.user
     if request.method == 'POST':
         quote_name = request.POST['quotes']
         technologies = request.POST.getlist('technologies')
@@ -218,9 +220,12 @@ def save_quotes(request):
             files.append('temp/' + myfile3.name)
             rfq.save()
         except Exception:
-            raise Exception
             pass
-
+        print(user.email)
+        cus = Customer.objects.get(email=user.email)
+        rfq = RFQ.objects.get(quotename=quote_name)
+        cus.quotes.add(rfq)
+        cus.save()
         # Send email to all suppliers
         for x in technologies:
             mail_subject = 'Requesting quotes'
@@ -239,3 +244,31 @@ def save_quotes(request):
                     email.attach_file(os.path.join(BASE_DIR, 'media', f))
                 email.send()
         return HttpResponse("FIle uploaded successfully")
+
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+
+def view_quotes(request):
+    a = RFQ.objects.all().reverse()
+    paginator = Paginator(a, 7)
+    page = request.GET.get('page')
+    try:
+        z = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        z = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        z = paginator.page(paginator.num_pages)
+    return render(request, 'view_rfq.html', {'a': z})
+
+
+def supplier_initial_bid(request):
+    if request.method == 'POST':
+        quote_name = request.POST['quotename']
+        quote_name = str(quote_name)
+        a = RFQ.objects.all()
+        return render(request, 'supplier_initial_bid.html', {'rfq': a, 'quote_name': quote_name})
+
+

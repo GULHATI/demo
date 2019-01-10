@@ -1,0 +1,51 @@
+{% extends "customerbase.html" %}
+
+{% block title %}HOME{% endblock %}
+
+{% block style %}
+<style>
+</style>
+
+{% endblock %}
+{% load static %}
+{% block content %}
+
+<h1 align="center">Request For Quotes</h1>
+<hr>
+<div class="container">
+{% for x in a %}
+<div class="well well-md container" style="width:100%">
+    <form method="post" action="{% url 'place_initial_bid' %}">
+        {% csrf_token %}
+    <p>
+        <strong>{{x.quotename}}</strong>
+        <input type="hidden" value="{{ x.quotename }}" name="quotename">
+        <button type="submit" class="btn btn-success" style="float:right">
+            Provide quote
+        </button>
+    </p>
+    </form>
+</div>
+{% endfor %}
+
+<div class="pagination" style="text-align:center; display:block" align="center">
+        <span class="step-links" style="font-size:18px; text-align:center" align="center">
+            {% if a.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ a.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ a.number }} of {{ a.paginator.num_pages }}.
+            </span>
+
+            {% if a.has_next %}
+                <a href="?page={{ a.next_page_number }}">next</a>
+                <a href="?page={{ a.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+
+{% endblock %}

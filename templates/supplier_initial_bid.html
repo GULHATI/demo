@@ -1,0 +1,37 @@
+{% extends "customerbase.html" %}
+
+{% block title %}HOME{% endblock %}
+
+{% block style %}
+<style>
+</style>
+
+{% endblock %}
+{% load static %}
+{% block content %}
+
+<h1 align="center">Request For Quotes</h1>
+<hr>
+<div class="well well-md container" style="width:100%">
+    <h3 align="center">{{ rfq.quotename }}</h3>
+</div>
+<div class="container">
+    <form class="form-horizontal" action="">
+        {% csrf_token %}
+        {% for z in rfq %}
+            {% if z.quotename == quote_name %}
+                {% for x in z.technologies.all %}
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="{{ x.name }}">{{ x.name }} :</label>
+                          <div class="col-sm-10">
+                            <input type="number" class="form-control" id="{{ x.name }}" placeholder="Enter Bid Amount" name="{{ x.name }}">
+                          </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-success">Submit Your Bid</button>
+    </form>
+</div>
+
+{% endblock %}
